@@ -23,5 +23,15 @@ class DBAccess {
       "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.names AS dept, roles.salary, CONCAT(employees.first_name, ' ', employees.last_name) AS mgr FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id;"
     );
   }
+
+  addDepartment(department) {
+    return this.connection.promise().query(
+      "INSERT INTO departments SET ? ", department);
+  }
+
+  addRole(role) {
+    return this.connection.promise().query(
+      "INSERT INTO roles SET ? ", role);
+  }
   }
   module.exports = new DBAccess(connection);
