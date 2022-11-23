@@ -6,7 +6,7 @@ This is a employee tracker that can be used when the user inputs node server.js 
 
 
 ## Live Walk Through
-
+https://drive.google.com/file/d/1B7jy7Yj7R-nrShJYS0MTZMJTFtMYfTtw/view
 
 
 ## Screenshot 
