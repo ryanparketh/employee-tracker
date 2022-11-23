@@ -30,7 +30,15 @@ function mainPrompt (){
           {
             name: "Add a Role",
             value: "ADD_ROLE"
-          }    
+          },
+          {
+            name: "Add an Employee",
+            value: "ADD_EMPLOYEE"
+          },
+          {
+            name: "Update Employees Role",
+            value: "UPDATE_EMPLOYEE_ROLE"
+          }   
     ]
 }
 ]).then(answer => {
@@ -50,6 +58,12 @@ function mainPrompt (){
             break;
         case 'ADD_ROLE':
             addRole();
+            break;
+        case 'ADD_EMPLOYEE':
+            addEmployee();
+            break;
+        case 'UPDATE_EMPLOYEE_ROLE':
+             updateEmployeeRole();
             break;
         default: 
         // quit the program tbd
@@ -131,6 +145,109 @@ function addRole(){
         .then(() => mainPrompt())
     })
 })
+}
+
+
+function addEmployee(){
+    dbAccess.showAllRoles()
+    .then(([roles_rows]) => {
+        let roles = roles_rows;
+        let roles_choices = roles.map(({ id, title}) => ({ name: title, value: id }));
+   
+    prompt([
+        {
+            name: 'first_name',
+            message: 'give first name of employee',
+        },
+        {
+            name: 'last_name',
+            message: 'give last name of employee',
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'what is the employees role?',
+            choices: roles_choices
+        },
+    ])
+    .then(answer => {
+        let first_name = answer.first_name;
+        let last_name = answer.last_name;
+        let role_id = answer.role_id;
+       dbAccess.showAllEmployees()
+       .then(([emp_rows])=> {
+        let employees = emp_rows;
+        let manager_choices = employees.map(({id, first_name, last_name})=> ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
+        prompt({
+            type: 'list',
+            name: 'manager_id',
+            message: 'give employee a manager',
+            choices: manager_choices
+        })
+        .then(answer => {
+            let newEmployee = {
+                manager_id: answer.manager_id,
+                role_id: role_id,
+                first_name: first_name,
+                last_name: last_name
+            }
+            dbAccess.addEmployee(newEmployee);
+        })
+        .then(() => {
+            console.log('successfully added employee')
+        })
+        .then(() => mainPrompt())
+       })
+    })
+})
+}
+
+
+function updateEmployeeRole(){
+
+    dbAccess.showAllEmployees()
+       .then(([emp_rows])=> {
+        let employees = emp_rows;
+        let employee_choices = employees.map(({id, first_name, last_name})=> ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
+        prompt({
+            type: 'list',
+            name: 'employee_id',
+            message: 'give employee id',
+            choices: employee_choices
+        })
+        .then(answer => {
+            let employee_id = answer.employee_id;
+
+    dbAccess.showAllRoles()
+    .then(([roles_rows]) => {
+        let roles = roles_rows;
+        let roles_choices = roles.map(({ id, title}) => ({ name: title, value: id }));
+   
+    prompt([
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'what is the new role of the employee?',
+            choices: roles_choices
+        }
+    ])
+    .then(answer => {
+       dbAccess.updateEmployeeRole(employee_id, answer.role_id)
+        .then(() => {
+            console.log('successfully updated employee role')
+        })
+        .then(() => mainPrompt())
+       });
+    });
+})
+}
+       )
 }
 
 mainPrompt();

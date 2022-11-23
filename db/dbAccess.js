@@ -33,5 +33,15 @@ class DBAccess {
     return this.connection.promise().query(
       "INSERT INTO roles SET ? ", role);
   }
+
+  addEmployee(employee) {
+    return this.connection.promise().query(
+      "INSERT INTO employees SET ? ", employee);
+  }
+
+  updateEmployeeRole(employee_id, role_id) {
+    return this.connection.promise().query(
+      "UPDATE employees SET role_id = ? WHERE id = ? ",[role_id, employee_id]);
+  }
   }
   module.exports = new DBAccess(connection);
