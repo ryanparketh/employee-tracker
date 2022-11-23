@@ -10,3 +10,4 @@ This is a employee tracker that can be used when the user inputs node server.js 
 
 
 ## Screenshot 
+<img width="961" alt="employeetracker" src="https://user-images.githubusercontent.com/110427818/203565830-70bbf709-5f77-42f9-8f49-3bb8b84384c5.png">
